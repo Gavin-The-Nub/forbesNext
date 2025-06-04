@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -129,7 +129,7 @@ const VEHICLES = {
 
 export default function VehicleDetailPage() {
   const params = useParams();
-  const router = useRouter();
+  //const router = useRouter();
   const vehicleId = Number.parseInt(params.id as string);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -184,8 +184,9 @@ export default function VehicleDetailPage() {
               Vehicle Not Found
             </h1>
             <p className="text-gray-600 mb-8">
-              The vehicle you're looking for doesn't exist.
+              The vehicle you&apos;re looking for doesn&apos;t exist.
             </p>
+
             <Link href="/vehicles">
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -286,10 +287,15 @@ export default function VehicleDetailPage() {
                   Key Specifications
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Zap className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm">{vehicle.specs.horsepower}</span>
-                  </div>
+                  {vehicle.specs.horsepower && (
+                    <div className="flex items-center space-x-2">
+                      <Zap className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm">
+                        {vehicle.specs.horsepower}
+                      </span>
+                    </div>
+                  )}
+
                   <div className="flex items-center space-x-2">
                     <Timer className="h-4 w-4 text-gray-400" />
                     <span className="text-sm">

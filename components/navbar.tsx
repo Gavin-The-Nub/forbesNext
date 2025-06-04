@@ -6,7 +6,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Car, Search, User, Menu, X } from "lucide-react";
+import { Search, User, Menu, X } from "lucide-react";
 import SearchModal from "./search-modal";
 import Image from "next/image";
 

@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Car, Eye, EyeOff, Lock, User, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Lock, User, AlertCircle } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -46,7 +46,8 @@ export default function AdminLoginPage() {
       } else {
         setError("Invalid username or password. Please try again.");
       }
-    } catch (err) {
+    } catch (error: unknown) {
+      console.error(error);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);

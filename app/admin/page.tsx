@@ -39,8 +39,8 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("vehicles");
   const [isAddingVehicle, setIsAddingVehicle] = useState(false);
   const [isAddingArticle, setIsAddingArticle] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState(null);
-  const [editingArticle, setEditingArticle] = useState(null);
+  // const [editingVehicle, setEditingVehicle] = useState(null);
+  //const [editingArticle, setEditingArticle] = useState(null);
 
   // Sample data - in a real app, this would come from a database
   const [vehicles, setVehicles] = useState([

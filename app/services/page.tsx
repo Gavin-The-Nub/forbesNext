@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Navbar from "@/components/navbar";
 
 export default function ServicesPage() {
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Simulate loading indefinitely for now
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      //   setIsLoading(false);
     }, 10000); // 10 seconds, but you can keep it loading
 
     return () => clearTimeout(timer);
