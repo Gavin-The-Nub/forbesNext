@@ -28,7 +28,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [results, setResults] = useState<SearchResult[]>([]);
 
   // Mock search data - in real app, this would come from API
-  const searchData = [
+  const searchData: SearchResult[] = [
     {
       type: "vehicle",
       title: "BMW M4 Competition",
