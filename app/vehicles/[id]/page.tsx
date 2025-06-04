@@ -305,7 +305,9 @@ export default function VehicleDetailPage() {
                   <div className="flex items-center space-x-2">
                     <Fuel className="h-4 w-4 text-gray-400" />
                     <span className="text-sm">
-                      {vehicle.specs.fuelEconomy || vehicle.specs.range}
+                      {"fuelEconomy" in vehicle.specs
+                        ? vehicle.specs.fuelEconomy
+                        : vehicle.specs.range}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
