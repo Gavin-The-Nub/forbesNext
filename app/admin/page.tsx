@@ -56,9 +56,9 @@ export default function AdminPage() {
       badgeColor: "bg-blue-500/70",
       year: 2024,
       mileage: 0,
-      horsepower: 503,
+      horsepower: 503, // Number() not needed, 503 is a number
       acceleration: "3.8s",
-      mpg: 22,
+      mpg: "22 mpg", // changed from 22 (number) to string
       drivetrain: "RWD",
       status: "active",
       createdAt: "2024-01-15",
@@ -77,7 +77,7 @@ export default function AdminPage() {
       mileage: 0,
       horsepower: 1020,
       acceleration: "1.99s",
-      mpg: "396 mi Range",
+      mpg: "396 mi Range", // already a string
       drivetrain: "AWD",
       status: "active",
       createdAt: "2024-01-10",
@@ -146,11 +146,13 @@ export default function AdminPage() {
     const vehicle = {
       ...newVehicle,
       id: vehicles.length + 1,
-      price: Number.parseInt(newVehicle.price),
+      price: Number.parseInt(newVehicle.price) || 0,
+      horsepower: Number.parseInt(newVehicle.horsepower) || 0, // convert horsepower to number
       status: "active",
       createdAt: new Date().toISOString().split("T")[0],
     };
     setVehicles([...vehicles, vehicle]);
+
     setNewVehicle({
       name: "",
       type: "",
@@ -162,11 +164,12 @@ export default function AdminPage() {
       badgeColor: "bg-blue-500",
       year: new Date().getFullYear(),
       mileage: 0,
-      horsepower: "",
+      horsepower: "", // still a string here because form input is string
       acceleration: "",
       mpg: "",
       drivetrain: "",
     });
+
     setIsAddingVehicle(false);
   };
 
@@ -191,15 +194,15 @@ export default function AdminPage() {
     setIsAddingArticle(false);
   };
 
-  const handleDeleteVehicle = (id) => {
+  const handleDeleteVehicle = (id: number) => {
     setVehicles(vehicles.filter((v) => v.id !== id));
   };
 
-  const handleDeleteArticle = (id) => {
+  const handleDeleteArticle = (id: number) => {
     setArticles(articles.filter((a) => a.id !== id));
   };
 
-  const handlePublishArticle = (id) => {
+  const handlePublishArticle = (id: number) => {
     setArticles(
       articles.map((a) =>
         a.id === id
