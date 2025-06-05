@@ -318,11 +318,11 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-gray-50">
       {/* Hero + Navbar Container - Exactly 100vh with padding */}
-      <div className="h-screen flex flex-col p-6">
+      <div className="h-dvh md:h-screen flex flex-col md:p-6 ">
         {/* Hero Section - Takes remaining space with rounded corners and margins */}
-        <header className="flex-1 relative overflow-hidden rounded-xl mb-6">
+        <header className="hs flex-1 relative overflow-hidden rounded-xl mb-6">
           <Image
             src="/home.avif"
             alt="Luxury sports car on a scenic road"
