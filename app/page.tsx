@@ -176,14 +176,6 @@ export default function HomePage() {
     return featuredVehicles.slice(startIndex, startIndex + vehiclesPerSlide);
   };
 
-  const handleArticleClick = (articleId: number) => {
-    router.push(`/articles/${articleId}`);
-  };
-
-  const handleVehicleClick = (vehicleId: number) => {
-    router.push(`/vehicles/${vehicleId}`);
-  };
-
   useEffect(() => {
     const fetchFeaturedArticles = async () => {
       setIsLoading(true);

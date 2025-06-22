@@ -22,6 +22,8 @@ type SearchResult = {
   category: string;
   url: string;
 };
+type Vehicle = { id: number; name: string; category: string };
+type Article = { id: number; title: string; category: string };
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const router = useRouter();
@@ -37,13 +39,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       // Fetch articles
       const { data: articles } = await supabase.from("articles").select("*");
       // Combine and map to SearchResult format
-      const vehicleResults = (vehicles || []).map((v: any) => ({
+      const vehicleResults = ((vehicles as Vehicle[]) || []).map((v) => ({
         type: "vehicle" as const,
         title: v.name,
         category: v.category,
         url: `/vehicles/${v.id}`,
       }));
-      const articleResults = (articles || []).map((a: any) => ({
+      const articleResults = ((articles as Article[]) || []).map((a) => ({
         type: "article" as const,
         title: a.title,
         category: a.category,

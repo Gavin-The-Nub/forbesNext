@@ -84,7 +84,7 @@ export default function VehiclePage() {
         } else {
           setVehicle(data);
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load vehicle");
       } finally {
         setLoading(false);
