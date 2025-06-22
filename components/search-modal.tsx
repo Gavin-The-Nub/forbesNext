@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search, Car, FileText } from "lucide-react";
+import { supabase } from "@/lib/supabase-client";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -26,48 +27,58 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [allData, setAllData] = useState<SearchResult[]>([]);
 
-  // Mock search data - in real app, this would come from API
-  const searchData: SearchResult[] = [
-    {
-      type: "vehicle",
-      title: "BMW M4 Competition",
-      category: "Sports",
-      url: "/vehicles?search=bmw",
-    },
-    {
-      type: "vehicle",
-      title: "Tesla Model S Plaid",
-      category: "Electric",
-      url: "/vehicles?search=tesla",
-    },
-    {
-      type: "vehicle",
-      title: "Porsche 911 Turbo S",
-      category: "Sports",
-      url: "/vehicles?search=porsche",
-    },
-    {
-      type: "article",
-      title: "The Future of Electric Vehicles",
-      category: "Electric Vehicles",
-      url: "/articles/1",
-    },
-    {
-      type: "article",
-      title: "Automotive Excellence Care",
-      category: "Maintenance",
-      url: "/articles/2",
-    },
-    { type: "page", title: "Services", category: "Page", url: "/services" },
-    { type: "page", title: "About Us", category: "Page", url: "/about" },
-    { type: "page", title: "Contact", category: "Page", url: "/contact" },
-  ];
+  useEffect(() => {
+    if (!isOpen) return;
+    const fetchData = async () => {
+      // Fetch vehicles
+      const { data: vehicles } = await supabase.from("vehicles").select("*");
+      // Fetch articles
+      const { data: articles } = await supabase.from("articles").select("*");
+      // Combine and map to SearchResult format
+      const vehicleResults = (vehicles || []).map((v: any) => ({
+        type: "vehicle" as const,
+        title: v.name,
+        category: v.category,
+        url: `/vehicles/${v.id}`,
+      }));
+      const articleResults = (articles || []).map((a: any) => ({
+        type: "article" as const,
+        title: a.title,
+        category: a.category,
+        url: `/articles/${a.id}`,
+      }));
+      // Add static pages
+      const pageResults = [
+        {
+          type: "page" as const,
+          title: "Services",
+          category: "Page",
+          url: "/services",
+        },
+        {
+          type: "page" as const,
+          title: "About Us",
+          category: "Page",
+          url: "/about",
+        },
+        {
+          type: "page" as const,
+          title: "Contact",
+          category: "Page",
+          url: "/contact",
+        },
+      ];
+      setAllData([...vehicleResults, ...articleResults, ...pageResults]);
+    };
+    fetchData();
+  }, [isOpen]);
 
   const handleSearch = (searchQuery: string) => {
     setQuery(searchQuery);
     if (searchQuery.trim()) {
-      const filtered = searchData.filter(
+      const filtered = allData.filter(
         (item) =>
           item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item.category.toLowerCase().includes(searchQuery.toLowerCase())

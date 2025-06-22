@@ -5,7 +5,7 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Forbes Capital Cars - Turning Dreams into Reality",
   description:
     "Discover our premium selection of high-performance vehicles designed for those who demand the extraordinary. Turning dreams into reality.",

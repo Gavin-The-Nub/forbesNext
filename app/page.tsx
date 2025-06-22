@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Navbar from "@/components/navbar";
 import {
   ArrowLeft,
@@ -25,106 +25,34 @@ import {
   VehicleCardSkeleton,
   BrandLogoSkeleton,
 } from "@/components/loading-skeletons";
+import { supabase } from "@/lib/supabase-client";
 
-// Move data outside component for better performance
-const FEATURED_VEICLES = [
-  {
-    id: 1,
-    name: "BMW M4 Competition",
-    type: "Sports Coupe",
-    price: "$84,995",
-    monthlyPayment: "$1,199/mo",
-    image: "/f4.avif",
-    badge: "New Arrival",
-    badgeColor: "bg-blue-500/70",
-    specs: [
-      { icon: Zap, label: "503 HP" },
-      { icon: Timer, label: "0-60: 3.8s" },
-      { icon: Fuel, label: "22 MPG" },
-      { icon: Settings, label: "RWD" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Tesla Model S Plaid",
-    type: "Electric Sedan",
-    price: "$129,990",
-    monthlyPayment: "$1,699/mo",
-    image: "/f5.avif",
-    badge: "Electric",
-    badgeColor: "bg-green-600/70",
-    specs: [
-      { icon: Zap, label: "1,020 HP" },
-      { icon: Timer, label: "0-60: 1.99s" },
-      { icon: Zap, label: "396 mi Range" },
-      { icon: Settings, label: "AWD" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Porsche 911 Turbo S",
-    type: "Sports Coupe",
-    price: "$216,100",
-    monthlyPayment: "$2,799/mo",
-    image: "/f6.jpg",
-    badge: "Limited",
-    badgeColor: "bg-amber-500/70",
-    specs: [
-      { icon: Zap, label: "640 HP" },
-      { icon: Timer, label: "0-60: 2.6s" },
-      { icon: Fuel, label: "20 MPG" },
-      { icon: Settings, label: "AWD" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Mercedes-AMG GT 63 S",
-    type: "Grand Tourer",
-    price: "$159,900",
-    monthlyPayment: "$2,199/mo",
-    image: "/f1.webp",
-    badge: "Performance",
-    badgeColor: "bg-red-500/70",
-    specs: [
-      { icon: Zap, label: "630 HP" },
-      { icon: Timer, label: "0-60: 3.1s" },
-      { icon: Fuel, label: "19 MPG" },
-      { icon: Settings, label: "AWD" },
-    ],
-  },
-  {
-    id: 5,
-    name: "Audi RS e-tron GT",
-    type: "Electric Sports",
-    price: "$142,400",
-    monthlyPayment: "$1,899/mo",
-    image: "/f2.webp",
-    badge: "Electric",
-    badgeColor: "bg-green-500/70",
-    specs: [
-      { icon: Zap, label: "637 HP" },
-      { icon: Timer, label: "0-60: 3.1s" },
-      { icon: Zap, label: "238 mi Range" },
-      { icon: Settings, label: "AWD" },
-    ],
-  },
-  {
-    id: 6,
-    name: "Lamborghini Huracán EVO",
-    type: "Supercar",
-    price: "$248,295",
-    monthlyPayment: "$3,299/mo",
-    image: "/f3.avif",
-    badge: "Exotic",
-    badgeColor: "bg-purple-500/70",
-    specs: [
-      { icon: Zap, label: "630 HP" },
-      { icon: Timer, label: "0-60: 2.9s" },
-      { icon: Fuel, label: "16 MPG" },
-      { icon: Settings, label: "AWD" },
-    ],
-  },
-];
+interface Vehicle {
+  id: number;
+  name: string;
+  type: string;
+  category: string;
+  price: number;
+  image: string;
+  badge?: string;
+  year: number;
+  mileage: number;
+  horsepower?: number;
+  acceleration?: string;
+  mpg?: string;
+  drivetrain?: string;
+  featured?: boolean;
+}
+
+interface Article {
+  id: number;
+  title: string;
+  excerpt: string | null;
+  category: string | null;
+  image: string | null;
+  created_at: string;
+}
+
 const CAR_BRANDS = [
   { name: "Honda", logo: "/honda.jpg" },
   { name: "Genesis", logo: "/gen.avif" },
@@ -132,15 +60,14 @@ const CAR_BRANDS = [
   { name: "Audi", logo: "/audi.jpg" },
   { name: "Peugeot", logo: "/geot.png" },
   { name: "Nissan", logo: "/nissan.png" },
-
   { name: "BMW", logo: "/bmw.png" },
   { name: "Mercedes", logo: "/mercedez.png" },
-
   { name: "Lexus", logo: "/lexus.svg" },
   { name: "Porsche", logo: "/porsche.png" },
   { name: "Ferrari", logo: "/fer.png" },
   { name: "Lamborghini", logo: "/lambo.jpg" },
 ];
+
 const FEATURES = [
   {
     icon: CheckCircle,
@@ -167,43 +94,57 @@ const FEATURES = [
       "Dedicated customer service team available 7 days a week for assistance.",
   },
 ];
-const ARTICLES = [
-  {
-    id: 1,
-    title: "The Future of Electric Vehicles: What to Expect in 2024",
-    excerpt:
-      "Explore the upcoming trends and technological advancements in the electric vehicle market that are set to revolutionize the automotive industry...",
-    date: "May 12, 2023",
-    category: "Electric Vehicles",
-    categoryColor: "bg-green-100 text-green-800",
-    image: "/a1.avif",
-  },
-  {
-    id: 2,
-    title: "The Art of Preserving Automotive Excellence",
-    excerpt:
-      "Master the refined techniques of maintaining your prestigious high-performance vehicle to ensure sublime performance and enduring elegance...",
-    date: "April 28, 2023",
-    category: "Maintenance",
-    categoryColor: "bg-blue-100 text-blue-800",
-    image: "/a2.avif",
-  },
-  {
-    id: 3,
-    title: "The Connoisseur's Guide to Luxury Automobiles",
-    excerpt:
-      "Make an informed decision when purchasing your next luxury vehicle with this comprehensive guide covering everything from financing to features...",
-    date: "March 15, 2023",
-    category: "Buying Guide",
-    categoryColor: "bg-amber-100 text-amber-800",
-    image: "/a3.avif",
-  },
-];
+
+// Helper function to get category color
+function getCategoryColor(category: string) {
+  switch (category) {
+    case "Electric Vehicles":
+      return "bg-green-100 text-green-800";
+    case "Maintenance":
+      return "bg-blue-100 text-blue-800";
+    case "Buying Guide":
+      return "bg-amber-100 text-amber-800";
+    case "Technology":
+      return "bg-purple-100 text-purple-800";
+    case "Market Analysis":
+      return "bg-red-100 text-red-800";
+    case "Sustainability":
+      return "bg-green-100 text-green-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+}
+
+// Helper function to get badge color
+function getBadgeColor(badge?: string) {
+  switch (badge) {
+    case "New Arrival":
+      return "bg-blue-500/70";
+    case "Popular":
+      return "bg-orange-500/70";
+    case "Limited":
+      return "bg-amber-500/70";
+    case "Electric":
+      return "bg-green-600/70";
+    case "Performance":
+      return "bg-red-600/70";
+    case "Exotic":
+      return "bg-purple-600/70";
+    case "Luxury":
+      return "bg-yellow-500/70";
+    case "Off-Road":
+      return "bg-lime-600/70";
+    default:
+      return "bg-gray-400/70";
+  }
+}
 
 export default function HomePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isNavbarSticky, setIsNavbarSticky] = useState(false);
+  const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
+  const [featuredVehicles, setFeaturedVehicles] = useState<Vehicle[]>([]);
 
   // Simulate loading for demonstration
   useEffect(() => {
@@ -229,11 +170,11 @@ export default function HomePage() {
   const [currentVehicleSlide, setCurrentVehicleSlide] = useState(0);
 
   const vehiclesPerSlide = 3;
-  const totalSlides = Math.ceil(FEATURED_VEICLES.length / vehiclesPerSlide);
+  const totalSlides = Math.ceil(featuredVehicles.length / vehiclesPerSlide);
 
   const getCurrentVehicles = () => {
     const startIndex = currentVehicleSlide * vehiclesPerSlide;
-    return FEATURED_VEICLES.slice(startIndex, startIndex + vehiclesPerSlide);
+    return featuredVehicles.slice(startIndex, startIndex + vehiclesPerSlide);
   };
 
   const handleArticleClick = (articleId: number) => {
@@ -243,6 +184,31 @@ export default function HomePage() {
   const handleVehicleClick = (vehicleId: number) => {
     router.push(`/vehicles/${vehicleId}`);
   };
+
+  useEffect(() => {
+    const fetchFeaturedArticles = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .eq("featured", true)
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (!error) setFeaturedArticles(data || []);
+    };
+    const fetchFeaturedVehicles = async () => {
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("*")
+        .eq("featured", true)
+        .order("created_at", { ascending: false })
+        .limit(6);
+      if (!error) setFeaturedVehicles(data || []);
+      setIsLoading(false);
+    };
+    fetchFeaturedArticles();
+    fetchFeaturedVehicles();
+  }, []);
 
   // Show loading skeleton
   if (isLoading) {
@@ -324,7 +290,7 @@ export default function HomePage() {
         {/* Hero Section - Takes remaining space with rounded corners and margins */}
         <header className="hs flex-1 relative overflow-hidden rounded-xl mb-6">
           <Image
-            src="/home.avif"
+            src="/2.jpg"
             alt="Luxury sports car on a scenic road"
             fill
             className="object-cover transform hover:scale-105 transition-transform duration-700"
@@ -401,82 +367,97 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {getCurrentVehicles().map((vehicle, index) => (
-              <div
-                key={vehicle.id}
-                className={`${
-                  index === 0
-                    ? "bg-white rounded-lg overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-md"
-                    : "bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
-                }`}
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={vehicle.image || "/placeholder.svg"}
-                    alt={vehicle.name}
-                    fill
-                    className="object-cover transform hover:scale-110 transition-transform duration-500"
-                  />
-                  <div
-                    className={`absolute top-4 right-4 ${
-                      vehicle.badgeColor
-                    } text-white px-3 py-1 ${
-                      index === 0 ? "rounded-full" : "rounded-sm"
-                    } text-xs font-extralight`}
-                  >
-                    {vehicle.badge}
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                    <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-5 w-full bg-gray-200 rounded mb-2"></div>
+                    <div className="h-10 w-4/5 bg-gray-200 rounded"></div>
                   </div>
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-sm font-light ">{vehicle.name}</h3>
-                      <p className="text-gray-500 text-xs font-extralight">
-                        {vehicle.type}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-s">{vehicle.price}</p>
-                      <p className="text-xs text-gray-500 hidden">
-                        {vehicle.monthlyPayment}
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    className={`grid grid-cols-2 ${
-                      index === 0 ? "gap-3" : "gap-4"
-                    } mb-${index === 0 ? "4" : "6"}`}
+                ))
+              : getCurrentVehicles().map((vehicle) => (
+                  <Card
+                    key={vehicle.id}
+                    className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
+                    onClick={() => router.push(`/vehicles/${vehicle.id}`)}
                   >
-                    {vehicle.specs.map((spec, specIndex) => (
+                    <div className="relative h-48 overflow-hidden">
+                      <Image
+                        src={vehicle.image || "/placeholder.svg"}
+                        alt={vehicle.name}
+                        fill
+                        className="object-cover transition-transform duration-500 hover:scale-110"
+                      />
                       <div
-                        key={specIndex}
-                        className="flex items-center space-x-2"
+                        className={`absolute top-4 right-4 ${getBadgeColor(
+                          vehicle.badge
+                        )} text-white px-3 py-1 rounded-full text-xs font-extralight`}
                       >
-                        <spec.icon className="text-gray-400 h-4 w-4" />
-                        <span className="text-xs font-extralight">
-                          {spec.label}
+                        {vehicle.badge}
+                      </div>
+                    </div>
+                    <CardContent className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h3 className="text-lg font-extralight ">
+                            {vehicle.name}
+                          </h3>
+                          <p className="text-sm font-extralight">
+                            {vehicle.type}
+                          </p>
+                          <p className="text-xs font-extralight">
+                            {vehicle.year} • {vehicle.mileage} miles
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-s ">
+                            ₱{vehicle.price.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid gap-4 mb-6 text-xs mb-4 font-extralight grid-cols-2">
+                        <span className="flex items-center gap-1">
+                          <Zap className="w-4 h-4 text-gray-400" />
+                          {vehicle.horsepower} HP
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Timer className="w-4 h-4 text-gray-400" />
+                          0-60: {vehicle.acceleration}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Fuel className="w-4 h-4 text-gray-400" />
+                          {vehicle.mpg}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Settings className="w-4 h-4 text-gray-400" />
+                          {vehicle.drivetrain}
                         </span>
                       </div>
-                    ))}
-                  </div>
-                  <div className="flex space-x-4">
-                    <Button
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition-colors duration-300 text-xs font-light"
-                      onClick={() => handleVehicleClick(vehicle.id)}
-                    >
-                      View Details
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-100 transition-colors duration-300"
-                    >
-                      <Heart className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </div>
-            ))}
+                      <div className="flex space-x-4">
+                        <Button
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-xs font-light"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/vehicles/${vehicle.id}`);
+                          }}
+                        >
+                          View Details
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="rounded-full"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <Heart className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
           </div>
 
           {totalSlides > 1 && (
@@ -557,43 +538,63 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {ARTICLES.map((article) => (
-              <div
-                key={article.id}
-                className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
-                onClick={() => handleArticleClick(article.id)}
-              >
-                <div className="h-48 overflow-hidden">
-                  <Image
-                    src={article.image || "/placeholder.svg"}
-                    alt={article.title}
-                    width={400}
-                    height={200}
-                    className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-3">
-                    <span className="text-xs text-gray-500 mr-4 font-light">
-                      {article.date}
-                    </span>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${article.categoryColor} font-light`}
-                    >
-                      {article.category}
-                    </span>
+            {isLoading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-48 bg-gray-200 rounded-lg mb-4"></div>
+                    <div className="h-4 w-32 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-5 w-full bg-gray-200 rounded mb-2"></div>
+                    <div className="h-10 w-4/5 bg-gray-200 rounded"></div>
                   </div>
-                  <h3 className="text-sm mb-3 font-light">{article.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3 text-xs font-extralight">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-300 text-xs">
-                    Read More
-                    <ArrowForward className="ml-1 text-sm h-4 w-4" />
+                ))
+              : featuredArticles.map((article) => (
+                  <div
+                    key={article.id}
+                    className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
+                    onClick={() => router.push(`/articles/${article.id}`)}
+                  >
+                    <div className="h-48 overflow-hidden">
+                      <Image
+                        src={article.image || "/a1.avif"}
+                        alt={article.title}
+                        width={400}
+                        height={200}
+                        className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <CardContent className="p-6">
+                      <div className="flex items-center mb-3">
+                        <span className="text-xs text-gray-500 mr-4 font-light">
+                          {new Date(article.created_at).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
+                        </span>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(
+                            article.category || ""
+                          )} font-light`}
+                        >
+                          {article.category}
+                        </span>
+                      </div>
+                      <h3 className="text-sm mb-3 font-light">
+                        {article.title}
+                      </h3>
+                      <p className="text-gray-600 mb-4 line-clamp-3 text-xs font-extralight">
+                        {article.excerpt}
+                      </p>
+                      <div className="flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-300 text-xs">
+                        Read More
+                        <ArrowForward className="ml-1 text-sm h-4 w-4" />
+                      </div>
+                    </CardContent>
                   </div>
-                </CardContent>
-              </div>
-            ))}
+                ))}
           </div>
         </section>
 

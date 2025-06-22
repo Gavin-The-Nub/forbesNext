@@ -20,124 +20,79 @@ import {
   PageHeaderSkeleton,
   FiltersSkeleton,
 } from "@/components/loading-skeletons";
+import { supabase } from "@/lib/supabase-client";
 
-// Move articles data outside component to prevent recreation on each render
-const ARTICLES_DATA = [
-  {
-    id: 1,
-    title: "The Future of Electric Vehicles: What to Expect in 2024",
-    excerpt:
-      "Explore the upcoming trends and technological advancements in the electric vehicle market that are set to revolutionize the automotive industry.",
-    date: "May 12, 2023",
-    readTime: "5 min read",
-    category: "Electric Vehicles",
-    categoryKey: "electric-vehicles",
-    categoryColor: "bg-green-100 text-green-800",
-    image: "/a1.avif",
-    author: "Sarah Johnson",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "The Art of Preserving Automotive Excellence",
-    excerpt:
-      "Master the refined techniques of maintaining your prestigious high-performance vehicle to ensure sublime performance and enduring elegance.",
-    date: "April 28, 2023",
-    readTime: "8 min read",
-    category: "Maintenance",
-    categoryKey: "maintenance",
-    categoryColor: "bg-blue-100 text-blue-800",
-    image: "/a2.avif",
-    author: "Michael Chen",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "The Connoisseur's Guide to Luxury Automobiles",
-    excerpt:
-      "Make an informed decision when purchasing your next luxury vehicle with this comprehensive guide covering everything from financing to features.",
-    date: "March 15, 2023",
-    readTime: "12 min read",
-    category: "Buying Guide",
-    categoryKey: "buying-guide",
-    categoryColor: "bg-amber-100 text-amber-800",
-    image: "/a3.avif",
-    author: "David Rodriguez",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Autonomous Driving: The Road to Self-Driving Cars",
-    excerpt:
-      "Dive deep into the world of autonomous vehicles and understand the technology that's shaping the future of transportation.",
-    date: "February 20, 2023",
-    readTime: "10 min read",
-    category: "Technology",
-    categoryKey: "technology",
-    categoryColor: "bg-purple-100 text-purple-800",
-    image: "/f2.webp",
-    author: "Emily Watson",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Luxury Car Market Trends: What's Hot in 2024",
-    excerpt:
-      "Analyze the latest trends in the luxury automotive market, from emerging brands to shifting consumer preferences.",
-    date: "January 18, 2023",
-    readTime: "7 min read",
-    category: "Market Analysis",
-    categoryKey: "market-analysis",
-    categoryColor: "bg-red-100 text-red-800",
-    image: "/f1.webp",
-    author: "Robert Kim",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Sustainable Luxury: Eco-Friendly Supercars",
-    excerpt:
-      "Discover how luxury car manufacturers are embracing sustainability without compromising on performance.",
-    date: "December 10, 2022",
-    readTime: "6 min read",
-    category: "Sustainability",
-    categoryKey: "sustainability",
-    categoryColor: "bg-green-100 text-green-800",
-    image: "/f4.avif",
-    author: "Lisa Thompson",
-    featured: false,
-  },
-];
+interface Article {
+  id: number;
+  title: string;
+  excerpt: string;
+  category: string;
+  author: string;
+  image: string;
+  featured: boolean;
+  created_at: string;
+}
+
+function getCategoryColor(category: string) {
+  switch (category) {
+    case "Electric Vehicles":
+      return "bg-green-100 text-green-800";
+    case "Maintenance":
+      return "bg-blue-100 text-blue-800";
+    case "Buying Guide":
+      return "bg-amber-100 text-amber-800";
+    case "Technology":
+      return "bg-purple-100 text-purple-800";
+    case "Market Analysis":
+      return "bg-red-100 text-red-800";
+    case "Sustainability":
+      return "bg-green-100 text-green-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+}
 
 export default function ArticlesPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [articles, setArticles] = useState<Article[]>([]);
 
-  // Simulate loading for demonstration
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 200); // 1 second loading simulation
+    const fetchArticles = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    return () => clearTimeout(timer);
+      if (error) {
+        console.error("Error fetching articles:", error);
+        setArticles([]);
+      } else {
+        setArticles(data || []);
+      }
+      setIsLoading(false);
+    };
+    fetchArticles();
   }, []);
 
   // Memoize filtered articles to improve performance
   const filteredArticles = useMemo(() => {
-    return ARTICLES_DATA.filter((article) => {
+    return articles.filter((article) => {
       const matchesSearch =
         searchQuery === "" ||
         article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory =
-        selectedCategory === "all" || article.categoryKey === selectedCategory;
+        selectedCategory === "all" ||
+        article.category.toLowerCase().replace(/ /g, "-") === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, articles]);
 
   // Memoize featured and regular articles
   const { featuredArticles, regularArticles } = useMemo(() => {
@@ -145,6 +100,14 @@ export default function ArticlesPage() {
     const regular = filteredArticles.filter((article) => !article.featured);
     return { featuredArticles: featured, regularArticles: regular };
   }, [filteredArticles]);
+
+  // Calculate read time based on content length
+  const calculateReadTime = (content: string) => {
+    const wordsPerMinute = 200;
+    const wordCount = content.split(" ").length;
+    const readTime = Math.ceil(wordCount / wordsPerMinute);
+    return readTime;
+  };
 
   const handleArticleClick = (articleId: number) => {
     router.push(`/articles/${articleId}`);
@@ -252,14 +215,16 @@ export default function ArticlesPage() {
                     <div className="flex items-center gap-4 mb-3 text-xs text-gray-500">
                       <span className="flex items-center gap-1 font-extralight">
                         <Calendar className="h-3 w-3" />
-                        {article.date}
+                        {new Date(article.created_at).toLocaleDateString()}
                       </span>
                       <span className="flex items-center gap-1 font-extralight">
                         <Clock className="h-3 w-3" />
-                        {article.readTime}
+                        {calculateReadTime(article.excerpt)} min read
                       </span>
                       <span
-                        className={`px-2 py-1 rounded-full ${article.categoryColor}`}
+                        className={`px-2 py-1 rounded-full ${getCategoryColor(
+                          article.category
+                        )}`}
                       >
                         {article.category}
                       </span>
@@ -308,15 +273,17 @@ export default function ArticlesPage() {
                   <div className="flex items-center gap-4 mb-3 text-xs text-gray-500">
                     <span className="flex items-center gap-1 font-extralight">
                       <Calendar className="h-3 w-3 " />
-                      {article.date}
+                      {new Date(article.created_at).toLocaleDateString()}
                     </span>
                     <span className="flex items-center gap-1 font-extralight">
                       <Clock className="h-3 w-3" />
-                      {article.readTime}
+                      {calculateReadTime(article.excerpt)} min read
                     </span>
                   </div>
                   <span
-                    className={`text-xs px-2 py-1 rounded-full ${article.categoryColor} mb-3 inline-block`}
+                    className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(
+                      article.category
+                    )} mb-3 inline-block`}
                   >
                     {article.category}
                   </span>

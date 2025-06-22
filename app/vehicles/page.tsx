@@ -20,6 +20,46 @@ import {
   PageHeaderSkeleton,
   FiltersSkeleton,
 } from "@/components/loading-skeletons";
+import { supabase } from "@/lib/supabase-client";
+
+interface Vehicle {
+  id: number;
+  name: string;
+  type: string;
+  category: string;
+  price: number;
+  image: string;
+  badge?: string;
+  year: number;
+  mileage: number;
+  horsepower?: number;
+  acceleration?: string;
+  mpg?: string;
+  drivetrain?: string;
+}
+
+function getBadgeColor(badge?: string) {
+  switch (badge) {
+    case "New Arrival":
+      return "bg-blue-500/70";
+    case "Popular":
+      return "bg-orange-500/70";
+    case "Limited":
+      return "bg-amber-500/70";
+    case "Electric":
+      return "bg-green-600/70";
+    case "Performance":
+      return "bg-red-600/70";
+    case "Exotic":
+      return "bg-purple-600/70";
+    case "Luxury":
+      return "bg-yellow-500/70";
+    case "Off-Road":
+      return "bg-lime-600/70";
+    default:
+      return "bg-gray-400/70";
+  }
+}
 
 export default function VehiclesPage() {
   const searchParams = useSearchParams();
@@ -34,6 +74,7 @@ export default function VehiclesPage() {
   const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   // Simulate loading for demonstration
   useEffect(() => {
@@ -44,124 +85,25 @@ export default function VehiclesPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const allVehicles = [
-    {
-      id: 1,
-      name: "BMW M4 Competition",
-      type: "Sports Coupe",
-      category: "sports",
-      price: 84995,
-      monthlyPayment: "$1,199/mo",
-      image: "/f4.avif",
-      badge: "New Arrival",
-      badgeColor: "bg-blue-500/70",
-      year: 2024,
-      mileage: 0,
-      specs: [
-        { icon: Zap, label: "503 HP" },
-        { icon: Timer, label: "0-60: 3.8s" },
-        { icon: Fuel, label: "22 MPG" },
-        { icon: Settings, label: "RWD" },
-      ],
-    },
-    {
-      id: 2,
-      name: "Tesla Model S Plaid",
-      type: "Electric Sedan",
-      category: "electric",
-      price: 129990,
-      monthlyPayment: "$1,699/mo",
-      image: "/f5.avif",
-      badge: "Electric",
-      badgeColor: "bg-green-500/70",
-      year: 2024,
-      mileage: 0,
-      specs: [
-        { icon: Zap, label: "1,020 HP" },
-        { icon: Timer, label: "0-60: 1.99s" },
-        { icon: Zap, label: "396 mi Range" },
-        { icon: Settings, label: "AWD" },
-      ],
-    },
-    {
-      id: 3,
-      name: "Porsche 911 Turbo S",
-      type: "Sports Coupe",
-      category: "sports",
-      price: 216100,
-      monthlyPayment: "$2,799/mo",
-      image: "/f6.jpg",
-      badge: "Limited",
-      badgeColor: "bg-amber-500/70",
-      year: 2024,
-      mileage: 0,
-      specs: [
-        { icon: Zap, label: "640 HP" },
-        { icon: Timer, label: "0-60: 2.6s" },
-        { icon: Fuel, label: "20 MPG" },
-        { icon: Settings, label: "AWD" },
-      ],
-    },
-    {
-      id: 4,
-      name: "Mercedes-Benz S-Class",
-      type: "Luxury Sedan",
-      category: "sedans",
-      price: 115000,
-      monthlyPayment: "$1,499/mo",
-      image: "/v2.jpg",
-      badge: "Luxury",
-      badgeColor: "bg-purple-500/70",
-      year: 2024,
-      mileage: 0,
-      specs: [
-        { icon: Zap, label: "429 HP" },
-        { icon: Timer, label: "0-60: 4.4s" },
-        { icon: Fuel, label: "25 MPG" },
-        { icon: Settings, label: "AWD" },
-      ],
-    },
-    {
-      id: 5,
-      name: "Range Rover Sport",
-      type: "Luxury SUV",
-      category: "suvs",
-      price: 95000,
-      monthlyPayment: "$1,299/mo",
-      image: "/v3.webp",
-      badge: "Popular",
-      badgeColor: "bg-orange-500/70",
-      year: 2024,
-      mileage: 0,
-      specs: [
-        { icon: Zap, label: "355 HP" },
-        { icon: Timer, label: "0-60: 6.3s" },
-        { icon: Fuel, label: "21 MPG" },
-        { icon: Settings, label: "AWD" },
-      ],
-    },
-    {
-      id: 6,
-      name: "Ford F-150 Raptor",
-      type: "Performance Truck",
-      category: "trucks",
-      price: 75000,
-      monthlyPayment: "$999/mo",
-      image: "/v1.jpg",
-      badge: "Off-Road",
-      badgeColor: "bg-red-500/70",
-      year: 2024,
-      mileage: 0,
-      specs: [
-        { icon: Zap, label: "450 HP" },
-        { icon: Timer, label: "0-60: 5.1s" },
-        { icon: Fuel, label: "18 MPG" },
-        { icon: Settings, label: "4WD" },
-      ],
-    },
-  ];
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  const filteredVehicles = allVehicles.filter((vehicle) => {
+      if (error) {
+        console.error("Error fetching vehicles:", error);
+        setVehicles([]);
+      } else {
+        setVehicles(data || []);
+      }
+      setIsLoading(false);
+    };
+    fetchVehicles();
+  }, []);
+
+  const filteredVehicles = vehicles.filter((vehicle) => {
     const matchesCategory =
       selectedCategory === "all" || vehicle.category === selectedCategory;
     const matchesSearch =
@@ -359,7 +301,7 @@ export default function VehiclesPage() {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-gray-600 font-extralight text-sm">
-            Showing {sortedVehicles.length} of {allVehicles.length} vehicles
+            Showing {sortedVehicles.length} of {vehicles.length} vehicles
             {selectedCategory !== "all" && ` in ${selectedCategory}`}
           </p>
         </div>
@@ -386,13 +328,15 @@ export default function VehiclesPage() {
                 }`}
               >
                 <Image
-                  src={vehicle.image || "/placeholder.svg"}
+                  src={vehicle.image || "/noImg.jpg"}
                   alt={vehicle.name}
                   fill
                   className="object-cover transition-transform duration-500 hover:scale-110"
                 />
                 <div
-                  className={`absolute top-4 right-4 ${vehicle.badgeColor} text-white px-3 py-1 rounded-full text-xs font-extralight`}
+                  className={`absolute top-4 right-4 ${getBadgeColor(
+                    vehicle.badge
+                  )} text-white px-3 py-1 rounded-full text-xs font-extralight`}
                 >
                   {vehicle.badge}
                 </div>
@@ -409,25 +353,31 @@ export default function VehiclesPage() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-s ">${vehicle.price.toLocaleString()}</p>
-                    <p className="text-sm text-gray-500 hidden">
-                      {vehicle.monthlyPayment}
-                    </p>
+                    <p className="text-s ">₱{vehicle.price.toLocaleString()}</p>
+                    <p className="text-sm text-gray-500 hidden"></p>
                   </div>
                 </div>
                 <div
-                  className={`grid gap-4 mb-6 ${
+                  className={`grid gap-4 mb-6 text-xs mb-4 font-extralight ${
                     viewMode === "list" ? "grid-cols-4" : "grid-cols-2"
                   }`}
                 >
-                  {vehicle.specs.map((spec, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                      <spec.icon className="text-gray-400 h-4 w-4" />
-                      <span className="text-xs font-extralight">
-                        {spec.label}
-                      </span>
-                    </div>
-                  ))}
+                  <span className="flex items-center gap-1">
+                    <Zap className="w-4 h-4 text-gray-400" />
+                    {vehicle.horsepower} HP
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Timer className="w-4 h-4 text-gray-400" />
+                    0-60: {vehicle.acceleration}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Fuel className="w-4 h-4 text-gray-400" />
+                    {vehicle.mpg}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Settings className="w-4 h-4 text-gray-400" />
+                    {vehicle.drivetrain}
+                  </span>
                 </div>
                 <div className="flex space-x-4">
                   <Button
