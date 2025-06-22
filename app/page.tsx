@@ -27,7 +27,7 @@ import {
 } from "@/components/loading-skeletons";
 import { supabase } from "@/lib/supabase-client";
 
-interface Vehicle {
+type Vehicle = {
   id: number;
   name: string;
   type: string;
@@ -42,16 +42,15 @@ interface Vehicle {
   mpg?: string;
   drivetrain?: string;
   featured?: boolean;
-}
-
-interface Article {
+};
+type Article = {
   id: number;
   title: string;
   excerpt: string | null;
   category: string | null;
   image: string | null;
   created_at: string;
-}
+};
 
 const CAR_BRANDS = [
   { name: "Honda", logo: "/honda.jpg" },
