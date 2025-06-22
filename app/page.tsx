@@ -27,7 +27,7 @@ import {
 } from "@/components/loading-skeletons";
 import { supabase } from "@/lib/supabase-client";
 
-type Vehicle = {
+interface Vehicle {
   id: number;
   name: string;
   type: string;
@@ -42,15 +42,16 @@ type Vehicle = {
   mpg?: string;
   drivetrain?: string;
   featured?: boolean;
-};
-type Article = {
+}
+
+interface Article {
   id: number;
   title: string;
   excerpt: string | null;
   category: string | null;
   image: string | null;
   created_at: string;
-};
+}
 
 const CAR_BRANDS = [
   { name: "Honda", logo: "/honda.jpg" },
@@ -174,6 +175,14 @@ export default function HomePage() {
   const getCurrentVehicles = () => {
     const startIndex = currentVehicleSlide * vehiclesPerSlide;
     return featuredVehicles.slice(startIndex, startIndex + vehiclesPerSlide);
+  };
+
+  const handleArticleClick = (articleId: number) => {
+    router.push(`/articles/${articleId}`);
+  };
+
+  const handleVehicleClick = (vehicleId: number) => {
+    router.push(`/vehicles/${vehicleId}`);
   };
 
   useEffect(() => {

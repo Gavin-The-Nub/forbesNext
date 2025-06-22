@@ -63,7 +63,7 @@ export default function ArticlePage() {
         } else {
           setArticle(data);
         }
-      } catch {
+      } catch (err) {
         setError("Failed to load article");
       } finally {
         setLoading(false);

@@ -44,7 +44,7 @@ function getBadgeColor(badge?: string) {
     case "New Arrival":
       return "bg-blue-500/70";
     case "Popular":
-      return "bg-orange-500/80";
+      return "bg-orange-500/70";
     case "Limited":
       return "bg-amber-500/70";
     case "Electric":
@@ -84,7 +84,7 @@ export default function VehiclePage() {
         } else {
           setVehicle(data);
         }
-      } catch {
+      } catch (err) {
         setError("Failed to load vehicle");
       } finally {
         setLoading(false);
