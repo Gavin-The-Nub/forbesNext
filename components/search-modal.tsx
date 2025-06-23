@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search, Car, FileText } from "lucide-react";
-import { supabase } from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase-client";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -28,7 +28,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [allData, setAllData] = useState<SearchResult[]>([]);
-
+  const supabase = createClient();
   useEffect(() => {
     if (!isOpen) return;
     const fetchData = async () => {

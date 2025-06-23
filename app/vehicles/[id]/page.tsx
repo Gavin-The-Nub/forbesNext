@@ -17,7 +17,7 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase-client";
 import Navbar from "@/components/navbar";
 import Link from "next/link";
 
@@ -67,7 +67,7 @@ export default function VehiclePage() {
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const supabase = createClient();
   useEffect(() => {
     const fetchVehicle = async () => {
       if (!params.id) return;

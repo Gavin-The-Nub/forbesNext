@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
-import { supabase } from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase-client";
 import Navbar from "@/components/navbar";
 import Link from "next/link";
 
@@ -46,7 +46,7 @@ export default function ArticlePage() {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const supabase = createClient();
   useEffect(() => {
     const fetchArticle = async () => {
       if (!params.id) return;

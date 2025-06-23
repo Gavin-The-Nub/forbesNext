@@ -20,7 +20,7 @@ import {
   PageHeaderSkeleton,
   FiltersSkeleton,
 } from "@/components/loading-skeletons";
-import { supabase } from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase-client";
 
 interface Article {
   id: number;
@@ -58,7 +58,7 @@ export default function ArticlesPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
-
+  const supabase = createClient();
   useEffect(() => {
     const fetchArticles = async () => {
       setIsLoading(true);

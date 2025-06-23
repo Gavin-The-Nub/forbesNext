@@ -50,7 +50,7 @@ import {
   X,
 } from "lucide-react";
 
-import { supabase } from "@/lib/supabase-client";
+import { createClient } from "@/lib/supabase-client";
 import AdminLoginPage from "./login/page";
 
 interface Vehicle {
@@ -89,6 +89,7 @@ interface Article {
 }
 
 export default function AdminPage() {
+  const supabase = createClient();
   const [activeTab, setActiveTab] = useState("vehicles");
   const [isAddingVehicle, setIsAddingVehicle] = useState(false);
   const [isAddingArticle, setIsAddingArticle] = useState(false);
