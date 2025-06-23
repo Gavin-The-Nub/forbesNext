@@ -1,4 +1,7 @@
-"use client";
+// At the top of /app/admin/login/page.tsx
+export const dynamic = "force-dynamic";
+
+("use client");
 
 import type React from "react";
 import Image from "next/image";
