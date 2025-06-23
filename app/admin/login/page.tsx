@@ -1,4 +1,4 @@
-("use client");
+"use client";
 
 // At the top of /app/admin/login/page.tsx
 export const dynamic = "force-dynamic";
