@@ -873,7 +873,7 @@ export default function AdminPage() {
                             </div>
                             {vehicleImage && (
                               <div className="relative">
-                                <img
+                                <Image
                                   src={URL.createObjectURL(vehicleImage)}
                                   alt="Vehicle preview"
                                   className="w-full h-32 object-cover rounded-lg"
@@ -1137,7 +1137,7 @@ export default function AdminPage() {
                             </div>
                             {articleImage && (
                               <div className="relative">
-                                <img
+                                <Image
                                   src={URL.createObjectURL(articleImage)}
                                   alt="Article preview"
                                   className="w-full h-32 object-cover rounded-lg"
@@ -1455,7 +1455,7 @@ export default function AdminPage() {
                     </label>
                   </div>
                   <div className="relative">
-                    <img
+                    <Image
                       src={
                         editVehicleImage
                           ? URL.createObjectURL(editVehicleImage)
@@ -1632,7 +1632,7 @@ export default function AdminPage() {
                       </label>
                     </div>
                     <div className="relative">
-                      <img
+                      <Image
                         src={
                           editArticleImage
                             ? URL.createObjectURL(editArticleImage)

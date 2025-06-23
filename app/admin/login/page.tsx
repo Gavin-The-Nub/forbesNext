@@ -14,7 +14,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Lock, User, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase-client";
 import AdminPage from "../page";
-
+import { Session } from "@supabase/supabase-js";
 export default function AdminLoginPage() {
   const router = useRouter();
 
@@ -23,15 +23,14 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      // Just check if the credentials are valid
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -40,11 +39,14 @@ export default function AdminLoginPage() {
         throw new Error("Invalid email or password");
       }
 
-      // If login successful, redirect to admin dashboard
       router.push("/admin");
       router.refresh();
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
