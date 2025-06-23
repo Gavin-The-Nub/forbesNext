@@ -1636,7 +1636,7 @@ export default function AdminPage() {
                         src={
                           editArticleImage
                             ? URL.createObjectURL(editArticleImage)
-                            : editingArticle.image
+                            : editingArticle.image ?? "/noImg.jpg"
                         }
                         alt="Article preview"
                         className="w-full h-32 object-cover rounded-lg"
