@@ -17,7 +17,7 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase-client";
+import { supabase } from "@/lib/supabase-client";
 import Navbar from "@/components/navbar";
 import Link from "next/link";
 
