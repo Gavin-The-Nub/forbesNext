@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navbar skeleton */}
+      a{/* Navbar skeleton */}
       <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
@@ -31,7 +31,6 @@ export default function Loading() {
           </div>
         </div>
       </div>
-
       <div className="px-6 py-8">
         <PageHeaderSkeleton />
 
