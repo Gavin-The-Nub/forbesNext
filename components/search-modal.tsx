@@ -59,12 +59,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         },
         {
           type: "page" as const,
-          title: "About Us",
-          category: "Page",
-          url: "/about",
-        },
-        {
-          type: "page" as const,
           title: "Contact",
           category: "Page",
           url: "/contact",

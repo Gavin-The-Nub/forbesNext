@@ -27,7 +27,6 @@ export default function Navbar({
     { name: "Home", href: "/", key: "home" },
     { name: "Vehicles", href: "/vehicles", key: "vehicles" },
     { name: "Services", href: "/services", key: "services" },
-    { name: "About Us", href: "/about", key: "about" },
     { name: "Articles", href: "/articles", key: "articles" },
     { name: "Contact", href: "/contact", key: "contact" },
   ];
