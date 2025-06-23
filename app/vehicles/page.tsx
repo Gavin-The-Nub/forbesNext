@@ -20,7 +20,7 @@ import {
   PageHeaderSkeleton,
   FiltersSkeleton,
 } from "@/components/loading-skeletons";
-import { createClient } from "@/lib/supabase-client";
+import { supabase } from "@/lib/supabase-client";
 
 interface Vehicle {
   id: number;
@@ -65,7 +65,7 @@ export default function VehiclesPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const categoryParam = searchParams.get("category");
-  const supabase = createClient();
+
   const [selectedCategory, setSelectedCategory] = useState(
     categoryParam || "all"
   );

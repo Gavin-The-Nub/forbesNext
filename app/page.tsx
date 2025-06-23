@@ -25,7 +25,7 @@ import {
   VehicleCardSkeleton,
   BrandLogoSkeleton,
 } from "@/components/loading-skeletons";
-import { createClient } from "@/lib/supabase-client";
+import { supabase } from "@/lib/supabase-client";
 
 interface Vehicle {
   id: number;
@@ -145,7 +145,7 @@ export default function HomePage() {
   const [isNavbarSticky, setIsNavbarSticky] = useState(false);
   const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
   const [featuredVehicles, setFeaturedVehicles] = useState<Vehicle[]>([]);
-  const supabase = createClient();
+
   // Simulate loading for demonstration
   useEffect(() => {
     const timer = setTimeout(() => {
