@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Calendar, User, Clock } from "lucide-react";            
+import { ArrowLeft, Calendar, User, Clock } from "lucide-react";
 import { supabase } from "@/lib/supabase-client";
 import Navbar from "@/components/navbar";
 import Link from "next/link";
@@ -167,17 +167,17 @@ export default function ArticlePage() {
                   )}
                 </div>
 
-                <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                <h1 className="text-2xl md:text-4xl  text-gray-900 mb-4 leading-tight">
                   {article.title}
                 </h1>
 
                 {article.excerpt && (
-                  <p className="text-xl text-gray-600 mb-6 leading-relaxed">
+                  <p className=" text-lg md:text-xl text-gray-600 mb-6 leading-relaxed font-light">
                     {article.excerpt}
                   </p>
                 )}
 
-                <div className="flex items-center space-x-6 text-sm text-gray-500 border-t pt-4">
+                <div className="flex items-center md:space-x-6 text-sm text-gray-500 border-t pt-4 font-light">
                   {article.author && (
                     <div className="flex items-center space-x-2">
                       <User className="h-4 w-4" />
@@ -214,7 +214,7 @@ export default function ArticlePage() {
               {/* Article Content */}
               {article.content && (
                 <div className="prose prose-lg max-w-none">
-                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                  <div className="text-gray-700 leading-relaxed whitespace-pre-wrap font-light">
                     {article.content}
                   </div>
                 </div>

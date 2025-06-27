@@ -27,6 +27,7 @@ export default function Navbar({
     { name: "Home", href: "/", key: "home" },
     { name: "Vehicles", href: "/vehicles", key: "vehicles" },
     { name: "Services", href: "/services", key: "services" },
+
     { name: "Articles", href: "/articles", key: "articles" },
     { name: "Contact", href: "/contact", key: "contact" },
   ];
@@ -52,7 +53,7 @@ export default function Navbar({
   // Use different styling for home page vs other pages
   const navbarClasses = isHomePage
     ? "py-4" // Home page navbar (no sticky/backdrop styling since it's handled by parent)
-    : "sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200 py-4";
+    : "sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-md border-b border-gray-200 py-4";
 
   return (
     <>
@@ -92,12 +93,12 @@ export default function Navbar({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center space-x-4">
+            <div className="ml-5 flex items-center space-x-4">
               <Button
                 size="icon"
                 variant="ghost"
                 onClick={handleSearchClick}
-                className="w-10 h-10 rounded-full hover:bg-gray-100 transition-colors"
+                className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
               >
                 <Search className="h-4 w-4" />
               </Button>
@@ -125,30 +126,40 @@ export default function Navbar({
               </Button>
             </div>
           </div>
-
-          {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <div className="lg:hidden mt-4 pb-4 border-t border-gray-200">
-              <div className="flex flex-col space-x-3 pt-4">
-                {navigationItems.map((item) => (
-                  <Link
-                    key={item.key}
-                    href={item.href}
-                    onClick={(e) => handleNavClick(item.href, item.key, e)}
-                    className={`font-medium py-2 px-4 rounded-lg transition-all duration-300 ${
-                      currentPage === item.key
-                        ? "text-blue-600 bg-blue-50 cursor-default"
-                        : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </nav>
+
+      {/* Mobile Navigation - Full Screen Overlay */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-white flex flex-col justify-center items-center transition-all duration-300">
+          <div className="absolute top-4 right-4">
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+          </div>
+          <div className="flex flex-col w-full max-w-xs mx-auto space-y-4 pt-12">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                onClick={(e) => handleNavClick(item.href, item.key, e)}
+                className={`font-medium py-4 px-6 rounded-lg text-center text-lg transition-all duration-300 w-full block ${
+                  currentPage === item.key
+                    ? "text-blue-600 bg-blue-50 cursor-default"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Search Modal */}
       <SearchModal

@@ -173,16 +173,16 @@ export default function VehiclePage() {
             {/* Right Column: Details */}
             <div className="lg:col-span-3 space-y-6 flex flex-col">
               <div>
-                <h1 className="text-4xl font-bold text-gray-900">
+                <h1 className="text-2xl md:text-4xl  text-gray-900">
                   {vehicle.name}
                 </h1>
-                <p className="text-xl text-gray-600 mt-2">
+                <p className=" text-lg md:text-xl text-gray-600 mt-2">
                   {vehicle.type}
                   {vehicle.category && ` | ${vehicle.category}`}
                 </p>
               </div>
 
-              <div className="flex items-center space-x-4 text-sm text-gray-500">
+              <div className="flex items-center space-x-1 md:space-x-4 text-sm text-gray-500">
                 <span className="flex items-center space-x-1">
                   <Calendar className="h-4 w-4" />
                   <span>{vehicle.year}</span>
@@ -192,17 +192,17 @@ export default function VehiclePage() {
               </div>
 
               <div>
-                <span className="text-4xl font-bold text-gray-900">
+                <span className="text-2xl md:text-4xl  text-gray-900">
                   ₱{vehicle.price.toLocaleString()}
                 </span>
               </div>
 
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">
+                  <h3 className="text-lg font-light mb-4">
                     Key Specifications
                   </h3>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-2 gap-4 text-sm font-extralight">
                     {vehicle.horsepower && (
                       <div className="flex items-center space-x-2">
                         <Zap className="h-4 w-4 text-gray-400" />
@@ -234,17 +234,21 @@ export default function VehiclePage() {
               <div className="flex items-center space-x-2 pt-2">
                 <Button
                   size="lg"
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 font-light"
                 >
                   <Phone className="h-4 w-4 mr-2" />
                   Call Dealer
                 </Button>
-                <Button size="lg" variant="outline" className="flex-1">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="flex-1 font-light"
+                >
                   <Mail className="h-4 w-4 mr-2" />
                   Email Inquiry
                 </Button>
                 <Button size="icon" variant="outline">
-                  <Heart className="h-4 w-4" />
+                  <Heart className="h-4 w-4 " />
                 </Button>
                 <Button size="icon" variant="outline">
                   <Share2 className="h-4 w-4" />

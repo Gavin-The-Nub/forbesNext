@@ -288,7 +288,7 @@ export default function HomePage() {
       {/* Hero + Navbar Container - Exactly 100vh with padding */}
       <div className="h-dvh md:h-screen flex flex-col md:p-6 ">
         {/* Hero Section - Takes remaining space with rounded corners and margins */}
-        <header className="hs flex-1 relative overflow-hidden rounded-xl mb-6">
+        <header className="hs flex-1 relative overflow-hidden  md:rounded-xl mb-6">
           <Image
             src="/2.jpg"
             alt="Luxury sports car on a scenic road"
@@ -322,7 +322,7 @@ export default function HomePage() {
         <div
           className={`${
             isNavbarSticky
-              ? "fixed top-0 left-6 right-6 z-50 bg-white border-b border-gray-100 rounded-lg"
+              ? "fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 rounded-lg"
               : "rounded-lg"
           } bg-white border-b border-gray-100 transition-all duration-300`}
         >
