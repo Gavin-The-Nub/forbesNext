@@ -192,9 +192,20 @@ export default function VehiclePage() {
               </div>
 
               <div>
-                <span className="text-2xl md:text-4xl  text-gray-900">
-                  ₱{vehicle.price.toLocaleString()}
-                </span>
+                <div className="flex items-center justify-between md:block mb-2">
+                  <span className="text-2xl md:text-4xl text-gray-900 font-light">
+                    ₱{vehicle.price.toLocaleString()}
+                  </span>
+                  {/* Heart and Share buttons - only show on mobile */}
+                  <div className="flex items-center space-x-2 md:hidden">
+                    <Button size="icon" variant="outline">
+                      <Heart className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="outline">
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               <Card>
@@ -247,12 +258,15 @@ export default function VehiclePage() {
                   <Mail className="h-4 w-4 mr-2" />
                   Email Inquiry
                 </Button>
-                <Button size="icon" variant="outline">
-                  <Heart className="h-4 w-4 " />
-                </Button>
-                <Button size="icon" variant="outline">
-                  <Share2 className="h-4 w-4" />
-                </Button>
+                {/* Hide these on mobile */}
+                <div className="hidden md:flex items-center space-x-2">
+                  <Button size="icon" variant="outline">
+                    <Heart className="h-4 w-4" />
+                  </Button>
+                  <Button size="icon" variant="outline">
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
