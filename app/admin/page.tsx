@@ -876,6 +876,8 @@ export default function AdminPage() {
                                 <Image
                                   src={URL.createObjectURL(vehicleImage)}
                                   alt="Vehicle preview"
+                                  width={400}
+                                  height={128}
                                   className="w-full h-32 object-cover rounded-lg"
                                 />
                                 <button
@@ -1140,6 +1142,8 @@ export default function AdminPage() {
                                 <Image
                                   src={URL.createObjectURL(articleImage)}
                                   alt="Article preview"
+                                  width={400}
+                                  height={128}
                                   className="w-full h-32 object-cover rounded-lg"
                                 />
                                 <button
@@ -1462,6 +1466,8 @@ export default function AdminPage() {
                           : editingVehicle.image
                       }
                       alt="Vehicle preview"
+                      width={400}
+                      height={128}
                       className="w-full h-32 object-cover rounded-lg"
                     />
                     {editVehicleImage && (
@@ -1639,6 +1645,8 @@ export default function AdminPage() {
                             : editingArticle.image ?? "/noImg.jpg"
                         }
                         alt="Article preview"
+                        width={400}
+                        height={128}
                         className="w-full h-32 object-cover rounded-lg"
                       />
                       {editArticleImage && (

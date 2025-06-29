@@ -168,8 +168,23 @@ export default function HomePage() {
   }, []);
 
   const [currentVehicleSlide, setCurrentVehicleSlide] = useState(0);
+  const [vehiclesPerSlide, setVehiclesPerSlide] = useState(3);
 
-  const vehiclesPerSlide = 3;
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setVehiclesPerSlide(1); // mobile
+      } else if (window.innerWidth < 1024) {
+        setVehiclesPerSlide(2); // tablet
+      } else {
+        setVehiclesPerSlide(3); // desktop
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const totalSlides = Math.ceil(featuredVehicles.length / vehiclesPerSlide);
 
   const getCurrentVehicles = () => {

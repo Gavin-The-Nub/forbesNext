@@ -111,11 +111,14 @@ export default function VehiclesPage() {
       vehicle.type.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesPrice =
       priceRange === "all" ||
-      (priceRange === "under-100k" && vehicle.price < 100000) ||
-      (priceRange === "100k-200k" &&
-        vehicle.price >= 100000 &&
-        vehicle.price < 200000) ||
-      (priceRange === "over-200k" && vehicle.price >= 200000);
+      (priceRange === "under-1m" && vehicle.price < 1000000) ||
+      (priceRange === "1m-2m" &&
+        vehicle.price >= 1000000 &&
+        vehicle.price < 2000000) ||
+      (priceRange === "2m-5m" &&
+        vehicle.price >= 2000000 &&
+        vehicle.price < 5000000) ||
+      (priceRange === "over-5m" && vehicle.price >= 5000000);
 
     return matchesCategory && matchesSearch && matchesPrice;
   });
@@ -243,14 +246,17 @@ export default function VehiclesPage() {
                   <SelectItem value="all" className="font-extralight">
                     All Prices
                   </SelectItem>
-                  <SelectItem value="under-100k" className="font-extralight">
-                    Under $100k
+                  <SelectItem value="under-1m" className="font-extralight">
+                    Under ₱1M
                   </SelectItem>
-                  <SelectItem value="100k-200k" className="font-extralight">
-                    $100k - $200k
+                  <SelectItem value="1m-2m" className="font-extralight">
+                    ₱1M - ₱2M
                   </SelectItem>
-                  <SelectItem value="over-200k" className="font-extralight">
-                    Over $200k
+                  <SelectItem value="2m-5m" className="font-extralight">
+                    ₱2M - ₱5M
+                  </SelectItem>
+                  <SelectItem value="over-5m" className="font-extralight">
+                    Over ₱5M
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -261,7 +267,17 @@ export default function VehiclesPage() {
               </label>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="font-extralight">
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue>
+                    {sortBy === "name"
+                      ? "Name"
+                      : sortBy === "price-low"
+                      ? "Price: Low to High"
+                      : sortBy === "price-high"
+                      ? "Price: High to Low"
+                      : sortBy === "year"
+                      ? "Year"
+                      : "Sort by"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="name" className="font-extralight">
@@ -286,7 +302,7 @@ export default function VehiclesPage() {
                 onClick={() => setViewMode("grid")}
               >
                 <Grid3X3 className="h-4 w-4" />
-                   </Button>
+              </Button>
               <Button
                 variant={viewMode === "list" ? "default" : "outline"}
                 size="icon"
