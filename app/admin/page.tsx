@@ -502,7 +502,7 @@ export default function AdminPage() {
                     alt="Forbes Capital Cars Logo"
                     width={250} // adjust size as needed
                     height={40}
-                    className="object-contain"
+                    className="object-contain md:block hidden"
                   />
                 </div>
                 <div className="flex items-center space-x-4">
